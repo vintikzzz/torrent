@@ -580,7 +580,12 @@ func (me *regularTrackerAnnounceDispatcher) updateTorrentInput(t *Torrent) {
 				return av
 			},
 		)
-		panicif.False(res.Exists)
+		if !res.Exists {
+			me.logger.Warn("announce data missing for tracker key during torrent input update",
+				"url", key.url,
+				"infohash", key.ShortInfohash)
+			continue
+		}
 	}
 }
 
