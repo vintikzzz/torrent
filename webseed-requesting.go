@@ -59,7 +59,10 @@ type webseedRequestHeapElem struct {
 */
 func (cl *Client) updateWebseedRequests() {
 	existingRequests := maps.Collect(cl.iterCurrentWebseedRequestsFromClient())
-	panicif.False(maps.Equal(existingRequests, maps.Collect(cl.iterCurrentWebseedRequests())))
+	if !maps.Equal(existingRequests, maps.Collect(cl.iterCurrentWebseedRequests())) {
+		cl.slogger.Warn("webseed requests desync: client and torrent views differ")
+		return
+	}
 
 	g.MakeMapIfNil(&cl.aprioriMap)
 	aprioriMap := cl.aprioriMap

@@ -940,7 +940,10 @@ func (me *regularTrackerAnnounceDispatcher) initTrackerClient(
 		Logger:       logger.WithContextValue(fmt.Sprintf("tracker client for %q", urlStr)),
 		ListenPacket: config.TrackerListenPacket,
 	})
-	panicif.Err(err)
+	if err != nil {
+		me.logger.Warn("failed to init tracker client", "url", urlStr, "err", err)
+		return
+	}
 	// Need deep copy
 	panicif.NotNil(u.User)
 	//ta := &regularTrackerAnnounceDispatcher{
